@@ -1,0 +1,22 @@
+{
+  "name": "expressintro",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aakash-Naykude/expressIntro.git"
+  },
+  "author": "Aakash Naykude",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Aakash-Naykude/expressIntro/issues"
+  },
+  "homepage": "https://github.com/Aakash-Naykude/expressIntro#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
