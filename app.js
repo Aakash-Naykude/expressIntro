@@ -2,10 +2,10 @@ const express = require("express")
 const app = express()
 const data = require("./MOCK_DATA.json")
 
-app.get("/", (req, res)=>{
+app.get("/users", (req, res)=>{
     return res.send(data);
 })
-app.get("/", (req, res)=>{
+app.get("/singleuser", (req, res)=>{
     const a = {}
     a.name = "aakash";
     return res.send(a);
