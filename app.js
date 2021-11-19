@@ -1,47 +1,88 @@
-const express = require("express")
-const app = express()
-const data = require("./MOCK_DATA.json")
-app.use(express.json())
+const express = require("express");
+const app = express();
+const data = require("./MOCK_DATA.json");
+app.use(express.json());
+
+
+
 //get all user
-app.get("/", (req, res)=>{
-    return res.send(data);
-})
+// app.get("/", (req, res) => {
+//   return res.send(data);
+// });
+
+
+
 //add another user
-app.post("/books", (req, res)=>{
-    //console.log(req.body)
-    let newentry = [...data, req.body]
-    res.send(newentry)
-})
+app.post("/books", (req, res) => {
+  //console.log(req.body)
+  let newentry = [...data, req.body];
+  res.send(newentry);
+});
+
+
+
 //get only one user
-app.get("/books/:author", (req, res)=>{
-    console.log(req.params.author)
-    const newuser = data.filter((user)=>user.author === req.params.author)
-    console.log(newuser)
-    res.send(newuser)
-})
+// 
+
+
+
+
+
+
+
 //update user using patch
-app.patch("/books/:author", (req, res)=>{
-    const newuse = data.filter((user)=>{
-        if(req.params.author === user.author){
-            if(req?.body?.author) user.author = req.body.author;
-            if(req?.body?.country) user.country = req.body.country;
-            if(req?.body?.imageLink) user.imageLink = req.body.imageLink;
-            if(req?.body?.language) user.language = req.body.language;
-            if(req?.body?.link) user.link = req.body.link;
-            if(req?.body?.pages) user.pages = req.body.pages;
-            if(req?.body?.title) user.link = req.body.title;
-            if(req?.body?.year) user.year = req.body.year;
-        }
-        return user
-    })
-    res.send(newuse)
-})
+app.patch("/books/:author", (req, res) => {
+  const newuse = data.filter((user) => {
+    if (Number(req.params.author) === user.author) {
+      if (req?.body?.author) user.author = req.body.author;
+      if (req?.body?.book_name) user.book_name = req.body.book_name;
+      if (req?.body?.pages) user.pages = req.body.pages;
+      if (req?.body?.published_year) user.published_year = req.body.published_year;
+    }
+    return user;
+  });
+  res.send(newuse);
+});
+
+
 //delete the user
-app.delete("/books/:author", (req, res)=>{
-    const newuser = data.filter((user)=>user.author !== req.params.author)
+app.delete("/books/:author", (req, res) => {
+  const newuser = data.filter((user) => user.author !== Number(req.params.author));
+  //console.log(newuser)
+  res.send(newuser);
+});
+
+
+
+
+const authenticate = (req, res, send)=>{
+    console.log('authenticate')
+    send()
+}
+const authorise = (permission) => {
+    return (req, res, next) => {
+      const originalSendFunc = res.send.bind(res);
+      res.send = function (body) {
+        body.api_requested_by = "Aakash Naykude";
+        body.books = data;
+        console.log("req"); // do whatever here
+        return originalSendFunc(body);
+        };
+      next();
+    };
+};
+//get all user and use middleware
+app.get("/", authenticate, authorise("req"), (req, res)=>{
+    res.send({})
+})
+//get single user and use middleware
+app.get("/books/:author", (req, res)=>{
+    const newuser = data.filter((user) => user.author === Number(req.params.author));
     console.log(newuser)
-    res.send(newuser)
+    res.send({"api_requested_by": "Aakash Naykude", "book":newuser[0]})
 })
-app.listen(2450, ()=>{
-    console.log('listning to port 2450')
-})
+
+
+app.listen(2450, () => {
+  console.log("listning to port 2450");
+});
