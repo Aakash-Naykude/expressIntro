@@ -55,31 +55,41 @@ app.delete("/books/:author", (req, res) => {
 
 
 
+
+
+
+//middleware 1
+var newuser = "abc"
 const authenticate = (req, res, send)=>{
     console.log('authenticate')
     send()
 }
+//middlware 2
 const authorise = (permission) => {
     return (req, res, next) => {
       const originalSendFunc = res.send.bind(res);
       res.send = function (body) {
         body.api_requested_by = "Aakash Naykude";
-        body.books = data;
-        console.log("req"); // do whatever here
+        body.books = newuser;
+        console.log(newuser); // do whatever here
         return originalSendFunc(body);
         };
       next();
     };
 };
+//middleware ended
 //get all user and use middleware
 app.get("/", authenticate, authorise("req"), (req, res)=>{
+    newuser = data
     res.send({})
 })
 //get single user and use middleware
-app.get("/books/:author", (req, res)=>{
-    const newuser = data.filter((user) => user.author === Number(req.params.author));
-    console.log(newuser)
-    res.send({"api_requested_by": "Aakash Naykude", "book":newuser[0]})
+app.get("/books/:author",  authenticate, authorise("req"), (req, res)=>{
+    newuser = data.filter((user) => user.author === Number(req.params.author));
+    newuser = newuser[0]
+    //console.log(newuser)
+    res.send({})
+    //res.send({"api_requested_by": "Aakash Naykude", "book":newuser[0]})
 })
 
 
